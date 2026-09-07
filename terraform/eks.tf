@@ -170,3 +170,9 @@ resource "aws_eks_node_group" "main" {
     Environment = var.environment
   }
 }
+
+# allow EKS nodes to call AWS Bedrock
+resource "aws_iam_role_policy_attachment" "eks_bedrock_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonBedrockFullAccess"
+  role       = aws_iam_role.eks_nodes.name
+}
