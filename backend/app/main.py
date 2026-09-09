@@ -6,9 +6,9 @@ import httpx
 import os
 import logging
 
-from .database import engine, get_db, Base
-from .models import LogAnalysis
-from .schemas import LogAnalysisCreate, LogAnalysisResponse, LogAnalysisList
+from database import engine, get_db, Base
+from models import LogAnalysis
+from schemas import LogAnalysisCreate, LogAnalysisResponse, LogAnalysisResponse, LogAnalysisList
 
 # set up logging
 logging.basicConfig(level=logging.INFO)

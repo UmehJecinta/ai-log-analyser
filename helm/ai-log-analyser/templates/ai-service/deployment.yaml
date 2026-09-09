@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-log-analyser-ai-service
+  namespace: default
+  labels:
+    app: ai-service
+    environment: {{ .Values.global.environment }}
+spec:
+  replicas: {{ .Values.aiService.replicas }}
+  selector:
+    matchLabels:
+      app: ai-service
+  template:
+    metadata:
+      labels:
+        app: ai-service
+    spec:
+      containers:
+        - name: ai-service
+          image: {{ .Values.aiService.image.repository }}:{{ .Values.aiService.image.tag }}
+          imagePullPolicy: {{ .Values.aiService.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.aiService.port }}
+          env:
+            - name: AWS_REGION
+              valueFrom:
+                configMapKeyRef:
+                  name: ai-log-analyser-config
+                  key: AWS_REGION
+            - name: BEDROCK_MODEL_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: ai-log-analyser-config
+                  key: BEDROCK_MODEL_ID
+          resources:
+            requests:
+              memory: {{ .Values.aiService.resources.requests.memory }}
+              cpu: {{ .Values.aiService.resources.requests.cpu }}
+            limits:
+              memory: {{ .Values.aiService.resources.limits.memory }}
+              cpu: {{ .Values.aiService.resources.limits.cpu }}
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.aiService.port }}
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.aiService.port }}
+            initialDelaySeconds: 10
+            periodSeconds: 5
