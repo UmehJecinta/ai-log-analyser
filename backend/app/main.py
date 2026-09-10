@@ -8,14 +8,18 @@ import logging
 
 from database import engine, get_db, Base
 from models import LogAnalysis
-from schemas import LogAnalysisCreate, LogAnalysisResponse, LogAnalysisResponse, LogAnalysisList
+from schemas import LogAnalysisCreate, LogAnalysisResponse, LogAnalysisList
 
 # set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # create database tables on startup
-Base.metadata.create_all(bind=engine)
+try:
+    Base.metadata.create_all(bind=engine)
+    logger.info("Database tables created successfully")
+except Exception as e:
+    logger.error(f"Failed to create database tables: {str(e)}")
 
 # initialise FastAPI app
 app = FastAPI(
