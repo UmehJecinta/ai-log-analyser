@@ -2,6 +2,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
+import logging
+
+logger = logging.getLogger(__name__)
 
 # read database URL from environment variable
 DATABASE_URL = os.getenv(
@@ -9,8 +12,13 @@ DATABASE_URL = os.getenv(
     "postgresql://dbadmin:password@localhost:5432/ailoganalyser"
 )
 
-# create database engine
-engine = create_engine(DATABASE_URL)
+# create database engine with connection resilience
+engine = create_engine(
+    DATABASE_URL,
+    pool_pre_ping=True,
+    pool_recycle=300,
+    connect_args={"connect_timeout": 10}
+)
 
 # create session factory
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
