@@ -176,3 +176,56 @@ resource "aws_iam_role_policy_attachment" "eks_bedrock_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonBedrockFullAccess"
   role       = aws_iam_role.eks_nodes.name
 }
+
+# IAM policy for AWS Load Balancer Controller
+resource "aws_iam_policy" "alb_controller" {
+  name        = "${var.project_name}-${var.environment}-alb-controller-policy"
+  description = "IAM policy for AWS Load Balancer Controller"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "elasticloadbalancing:*",
+          "ec2:CreateSecurityGroup",
+          "ec2:Describe*",
+          "ec2:AuthorizeSecurityGroupIngress",
+          "ec2:RevokeSecurityGroupIngress",
+          "ec2:DeleteSecurityGroup",
+          "acm:ListCertificates",
+          "acm:DescribeCertificate",
+          "iam:ListServerCertificates",
+          "iam:GetServerCertificate",
+          "waf-regional:GetWebACL",
+          "waf-regional:GetWebACLForResource",
+          "waf-regional:AssociateWebACL",
+          "waf-regional:DisassociateWebACL",
+          "wafv2:GetWebACL",
+          "wafv2:GetWebACLForResource",
+          "wafv2:AssociateWebACL",
+          "wafv2:DisassociateWebACL",
+          "shield:GetSubscriptionState",
+          "shield:DescribeProtection",
+          "shield:CreateProtection",
+          "shield:DeleteProtection"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ec2:CreateTags",
+          "ec2:DeleteTags"
+        ]
+        Resource = "arn:aws:ec2:*:*:security-group/*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "alb_controller_policy" {
+  policy_arn = aws_iam_policy.alb_controller.arn
+  role       = aws_iam_role.eks_nodes.name
+}
