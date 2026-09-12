@@ -33,3 +33,9 @@ output "ecr_ai_service_url" {
   description = "ECR URL for the AI microservice image"
   value       = aws_ecr_repository.ai_service.repository_url
 }
+
+output "alb_controller_role_arn" {
+  description = "IAM role ARN for AWS Load Balancer Controller"
+  value       = aws_iam_role.alb_controller.arn
+}
+
