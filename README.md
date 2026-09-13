@@ -29,18 +29,21 @@ cd terraform && terraform init && terraform apply
 # 3. Connect kubectl
 aws eks update-kubeconfig --region us-east-1 --name ai-log-analyser-dev-cluster --profile aws
 
-# 4. Push code to trigger CI/CD pipeline
+# 4. Push code to trigger CI/CD pipeline (builds and pushes images to ECR)
 git push origin master
 
-# 5. Apply ArgoCD application
-kubectl apply -f argocd/application.yaml
+# 5. Get RDS endpoint
+cd terraform && terraform output -raw rds_endpoint
 
-# 6. Deploy app
-helm install ai-log-analyser ./helm/ai-log-analyser \
-  --set database.host=$(terraform output -raw rds_endpoint) \
+# 6. Deploy app with Helm (use RDS endpoint from step 5)
+cd .. && helm install ai-log-analyser ./helm/ai-log-analyser \
+  --set database.host=YOUR_RDS_ENDPOINT \
   --set 'database.password=YOUR_DB_PASSWORD'
 
-# 7. Get app URL
+# 7. Apply ArgoCD application (do this AFTER helm install)
+kubectl apply -f argocd/application.yaml
+
+# 8. Get app URL
 kubectl get ingress
 ```
 
