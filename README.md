@@ -47,12 +47,26 @@ kubectl apply -f argocd/application.yaml
 kubectl get ingress
 ```
 
-## Grafana
+## Access Dashboards (Local)
 
+**ArgoCD:**
 ```bash
-kubectl port-forward svc/prometheus-grafana 3000:80 -n monitoring
+kubectl port-forward svc/argocd-server -n argocd 8080:443
 ```
-Open `http://localhost:3000` · Login: `admin` / `prom-operator`
+Open `https://localhost:8080` → click "Proceed to localhost (unsafe)"
+
+Get password:
+```bash
+kubectl get secret argocd-initial-admin-secret -n argocd \
+  -o jsonpath='{.data.password}' | base64 -d
+```
+Login: username `admin`
+
+**Grafana:**
+```bash
+kubectl port-forward svc/prometheus-grafana 3001:80 -n monitoring
+```
+Open `http://localhost:3001` · Login: `admin` / `prom-operator`
 
 ## Destroy
 
