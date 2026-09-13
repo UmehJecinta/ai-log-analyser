@@ -70,10 +70,37 @@ Open `http://localhost:3001` · Login: `admin` / `prom-operator`
 
 ## Destroy
 
+**Important — run in this exact order to avoid errors:**
+
 ```bash
+# 1. Remove application and ALB first
+helm uninstall ai-log-analyser
+
+# 2. Wait 30 seconds for ALB to be fully deleted
+sleep 30
+
+# 3. Verify ALB is gone before proceeding
+aws elbv2 describe-load-balancers \
+  --region us-east-1 \
+  --query 'LoadBalancers[*].LoadBalancerName' \
+  --output text
+
+# 4. Destroy all AWS infrastructure
 cd terraform && terraform destroy
+
+# 5. Delete S3 state bucket
 cd .. && ./delete-state-bucket.sh
 ```
+
+**Verify everything is deleted:**
+```bash
+aws eks list-clusters --region us-east-1
+aws rds describe-db-instances --region us-east-1 --query 'DBInstances[*].DBInstanceIdentifier'
+aws elbv2 describe-load-balancers --region us-east-1 --query 'LoadBalancers[*].LoadBalancerName'
+aws s3 ls
+```
+
+All commands should return empty.
 
 ## Security
 
