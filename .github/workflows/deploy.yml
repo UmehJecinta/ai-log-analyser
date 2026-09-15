@@ -4,7 +4,13 @@ on:
   push:
     branches:
       - master
-
+    paths:
+      - 'frontend/**'
+      - 'backend/**'
+      - 'ai-service/**'
+      - 'helm/**'
+      - '.github/workflows/deploy.yml'
+      
 env:
   AWS_REGION: us-east-1
   ECR_REGISTRY: 869254767358.dkr.ecr.us-east-1.amazonaws.com
