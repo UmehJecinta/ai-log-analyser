@@ -23,7 +23,7 @@ bedrock = boto3.client(
 )
 
 # model ID — configurable via environment variable
-MODEL_ID = os.getenv("BEDROCK_MODEL_ID", "anthropic.claude-haiku-4-5-20251001-v1:0")
+MODEL_ID = os.getenv("BEDROCK_MODEL_ID", "us.anthropic.claude-haiku-4-5-20251001-v1:0")
 
 # define what the incoming request should look like
 class LogAnalysisRequest(BaseModel):

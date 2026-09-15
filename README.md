@@ -4,7 +4,7 @@ Paste application or server logs and get instant AI-powered root cause analysis 
 
 ## Stack
 
-**App:** React · FastAPI · PostgreSQL · AWS Bedrock (Claude 3 Haiku)
+**App:** React · FastAPI · PostgreSQL · AWS Bedrock (Claude Haiku 4.5)
 
 **Infrastructure:** AWS EKS · RDS · ECR · VPC · Terraform
 
@@ -202,6 +202,7 @@ aws ec2 describe-security-groups \
   --query 'SecurityGroups[?GroupName!=`default`].[GroupId,GroupName]' \
   --output table
 ```
+Note: Apply step Alb and VPC sg if helm doesn't delete them
 
 **Delete each k8s security group shown above:**
 ```bash
