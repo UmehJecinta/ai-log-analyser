@@ -7,7 +7,7 @@ global:
 frontend:
   image:
     repository: 869254767358.dkr.ecr.us-east-1.amazonaws.com/ai-log-analyser-dev-frontend
-    tag: latest
+    tag: e074d2a5c8cf3d1dfded6c6d255deca137bedd44
     pullPolicy: Always
   replicas: 2
   port: 3000
@@ -23,7 +23,7 @@ frontend:
 backend:
   image:
     repository: 869254767358.dkr.ecr.us-east-1.amazonaws.com/ai-log-analyser-dev-backend
-    tag: latest
+    tag: e074d2a5c8cf3d1dfded6c6d255deca137bedd44
     pullPolicy: Always
   replicas: 2
   port: 8000
@@ -39,7 +39,7 @@ backend:
 aiService:
   image:
     repository: 869254767358.dkr.ecr.us-east-1.amazonaws.com/ai-log-analyser-dev-ai-service
-    tag: latest
+    tag: e074d2a5c8cf3d1dfded6c6d255deca137bedd44
     pullPolicy: Always
   replicas: 1
   port: 8001
