@@ -89,9 +89,9 @@ jobs:
         env:
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          sed -i "s|tag:.*ai-service.*|tag: $IMAGE_TAG|g" helm/ai-log-analyser/values.yaml
-          sed -i "s|tag:.*backend.*|tag: $IMAGE_TAG|g" helm/ai-log-analyser/values.yaml
-          sed -i "s|tag:.*frontend.*|tag: $IMAGE_TAG|g" helm/ai-log-analyser/values.yaml
+          sed -i "/ai-log-analyser-dev-ai-service/{n;s|tag:.*|tag: $IMAGE_TAG|}" helm/ai-log-analyser/values.yaml
+          sed -i "/ai-log-analyser-dev-backend/{n;s|tag:.*|tag: $IMAGE_TAG|}" helm/ai-log-analyser/values.yaml
+          sed -i "/ai-log-analyser-dev-frontend/{n;s|tag:.*|tag: $IMAGE_TAG|}" helm/ai-log-analyser/values.yaml
 
       - name: Commit and push updated Helm values
         run: |
