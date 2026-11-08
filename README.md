@@ -8,7 +8,7 @@ Paste application or server logs and get instant AI-powered root cause analysis 
 
 **Infrastructure:** AWS EKS · RDS · ECR · VPC · Terraform
 
-**DevOps:** Docker · GitHub Actions · Helm · ArgoCD · Prometheus · Grafana
+**DevOps:** Docker · GitHub Actions (OIDC) · Helm · ArgoCD · Prometheus · Grafana
 
 ## Run Locally
 
@@ -60,6 +60,7 @@ This provisions everything:
 - ECR image repositories
 - IAM roles with least privilege
 - OIDC + IRSA for secure pod authentication
+- GitHub Actions OIDC provider and CI role (no stored AWS keys)
 - ArgoCD
 - AWS Load Balancer Controller
 - Prometheus + Grafana
@@ -82,11 +83,15 @@ kubectl get nodes
 ```
 > Both nodes should show `Ready` before proceeding.
 
-**Push code to trigger CI/CD pipeline:**
+**Run the CI/CD pipeline to build and push images:**
+
+Push a change, or on GitHub open the Actions tab, pick the latest run and click **Re-run all jobs**.
+> Wait for the pipeline to show ✅ green on the Actions tab before proceeding. The pipeline lints the code, builds the images, pushes them to ECR and commits the new image tag to `helm/ai-log-analyser/values.yaml`.
+
+**Pull the tag commit made by the pipeline:**
 ```bash
-git push origin master
+git pull origin master
 ```
-> Wait for the pipeline to show ✅ green on the Actions tab before proceeding.
 
 **Get RDS endpoint:**
 ```bash
@@ -255,9 +260,10 @@ aws s3 ls
 
 - No credentials hardcoded anywhere in the codebase
 - OIDC + IRSA for secure pod-to-AWS authentication
+- GitHub Actions authenticates to AWS with OIDC (short-lived credentials, no stored keys), restricted to this repo and the master branch
+- CI lints the code before any image is built
 - EKS nodes and RDS deployed in private subnets
 - All traffic routed through ALB — only internet-facing component
 - Kubernetes Secrets for sensitive runtime data
 - IAM roles follow least privilege principle
-- GitHub Secrets for CI/CD pipeline credentials
 - Terraform state encrypted at rest in S3
